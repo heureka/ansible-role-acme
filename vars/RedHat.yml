@@ -1,0 +1,7 @@
+---
+acme_prerequisite_packages:
+  - cronie
+  - git
+  - curl
+  - openssl
+  - bind-utils

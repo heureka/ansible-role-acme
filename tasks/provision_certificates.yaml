@@ -1,0 +1,40 @@
+- name: Check for Let's Encrypt certificate for {{ item.domain }}
+  stat:
+    path: "{{ acme_paths['certificates_path'] }}/{{ item.domain }}/ca.cer"
+  register: "acme_domain_certificate"
+
+- include_tasks: dns_gcloud.yaml
+  when:
+    - item.provider == 'dns_gcloud'
+    - (acme_enabled and acme_domain_certificate.stat.exists == false) or (acme_enabled and acme_force is defined and acme_force )
+
+- name: Create the directory structure for {{ item.domain }}'s certificate
+  file:
+    path: "{{ acme_paths['certificates_path'] }}/{{ item.domain }}"
+    state: directory
+  when: |
+    (acme_enabled and acme_domain_certificate.stat.exists == false) or
+    (acme_enabled and acme_force is defined and acme_force )
+
+- name: Create Letsencrypt SSL certificate for {{ item.domain }} [DNS challenge]
+  command:
+    cmd: >
+      {{ acme_paths['install_path'] }}/acme.sh --issue -d
+      {{ item.domain }} --dns {{ item.provider }}
+      {{ '--challenge-alias {{ acme_dns01_challenge_alias.alias }}' if acme_dns01_challenge_alias.enabled else '' }}
+      --config-home {{ acme_paths['install_path'] }}
+      --cert-file {{ acme_paths['certificates_path'] }}/{{ item.domain }}/{{ item.domain }}.cer
+      --key-file {{ acme_paths['certificates_path'] }}/{{ item.domain }}/{{ item.domain }}.key
+      --fullchain-file {{ acme_paths['certificates_path'] }}/{{ item.domain }}/fullchain.cer
+      --ca-file {{ acme_paths['certificates_path'] }}/{{ item.domain }}/ca.cer
+      --reloadcmd "{{ acme_reload_cmd }}"
+      {{ '--force' if acme_force else '' }}
+      {{ '--test' if acme_test else ''}}
+  notify:
+    - "HANDLER: Run {{ acme_reload_cmd }}"
+  when: |
+    (acme_enabled and acme_domain_certificate.stat.exists == false) or
+    (acme_enabled and acme_force is defined and acme_force )
+  environment:
+    # only used by acme.sh when using the dns_gcloud provider
+    CLOUDSDK_ACTIVE_CONFIG_NAME: "{{ 'dns-config' if item.provider == 'dns_gcloud' else '' }}"

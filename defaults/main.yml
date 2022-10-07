@@ -1,0 +1,31 @@
+---
+# defaults file for role-webhost-certificate
+acme_certificates_path: "/etc/ssl/certs"
+
+acme_enabled: false
+# run against Let's Encrypt staging environment
+acme_test: false
+# force certificate recreation
+acme_force: false
+# reload command to propagate the certificate for a service,
+# for example `systemctl restart nginx`
+acme_reload_cmd: ""
+# a list of domains for which to create certificates
+acme_domains_email:
+acme_domains:
+  - domain: "example.com"
+    force: true
+    provider: dns_gcloud
+acme_dns01_enabled: true
+acme_dns01_challenge_alias:
+  enabled: false
+  alias: ""
+
+acme_account_email: "email@example.com"
+acme_paths:
+  certificates_path: "/etc/ssl/certs"
+  download_path: "/usr/local/src/acme.sh"
+  install_path: "/opt/acmesh"
+  cert_path: "/opt/acmesh/certs"
+  log_file: "/var/log/acmesh.log"
+

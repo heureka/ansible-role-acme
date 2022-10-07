@@ -1,0 +1,12 @@
+---
+# tasks file for role-webhost-certificate
+- name: Include distro-specific variables
+  include_vars: "vars/{{ ansible_facts['os_family'] }}.yml"
+
+- name: Make sure acme.sh is installed
+  include_tasks: "install_acmesh.yml"
+
+- name: Check for and potentially provision LE certificates
+  include_tasks: provision_certificates.yaml
+  with_items:
+    - "{{ acme_domains }}"

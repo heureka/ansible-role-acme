@@ -1,0 +1,7 @@
+---
+acme_prerequisite_packages:
+  - cron
+  - git
+  - curl
+  - openssl
+  - "{{ 'bind9-dnsutils' if ansible_distribution_major_version >= '11' else 'dnsutils' }}"

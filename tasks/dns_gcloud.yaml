@@ -1,0 +1,23 @@
+- name: Check if gcloud DNS config already exists
+  command:
+    cmd: gcloud config configurations list
+  when:
+    - item.provider == "dns_gcloud"
+  register: gcloud_dns_config
+  changed_when: false
+
+- name: Create dns-config gcloud config
+  command:
+    cmd: gcloud config configurations create dns-config --no-activate
+  when:
+    - item.provider == "dns_gcloud"
+    - "'dns-config' not in gcloud_dns_config.stdout"
+
+- name: Switch to {{ item.project }} project for {{ item.domain }}
+  command:
+    cmd: gcloud config set project "{{ item.project }}"
+  when:
+    - item.provider == "dns_gcloud"
+  environment:
+    CLOUDSDK_ACTIVE_CONFIG_NAME: dns-config
+  changed_when: false

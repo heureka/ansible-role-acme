@@ -1,0 +1,3 @@
+---
+- name: "HANDLER: Run {{ acme_reload_cmd }}"
+  command: "{{ acme_reload_cmd }}"
