@@ -31,7 +31,7 @@
   when: not acme_install_path.stat.exists
 
 - name: Make sure the ACME server is set to {{ acme_server }}
-  command: "./acme.sh --set-default-ca  --server {{ acme_server }}"
+  command: "./acme.sh --home {{ acme_paths['install_path'] }} --set-default-ca  --server {{ acme_server }}"
   changed_when: false
 
 - name: Upgrade acme.sh
