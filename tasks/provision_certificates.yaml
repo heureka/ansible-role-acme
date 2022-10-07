@@ -19,7 +19,7 @@
 - name: Create Letsencrypt SSL certificate for {{ item.domain }} [DNS challenge]
   command:
     cmd: >
-      {{ acme_paths['install_path'] }}/acme.sh server {{ acme_server|default('letsencrypt') }} --issue -d
+      {{ acme_paths['install_path'] }}/acme.sh --server {{ acme_server|default('letsencrypt') }} --issue -d
       {{ item.domain }} --dns {{ item.provider }}
       {{ '--challenge-alias {{ acme_dns01_challenge_alias.alias }}' if acme_dns01_challenge_alias.enabled else '' }}
       --config-home {{ acme_paths['install_path'] }}
