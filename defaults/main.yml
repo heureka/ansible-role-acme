@@ -5,6 +5,8 @@ acme_certificates_path: "/etc/ssl/certs"
 acme_enabled: false
 # run against Let's Encrypt staging environment
 acme_test: false
+# use Let's Encrypt server instead of ZeroSSL
+acme_server: "letsencrypt"
 # force certificate recreation
 acme_force: false
 # reload command to propagate the certificate for a service,

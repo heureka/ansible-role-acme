@@ -30,6 +30,10 @@
   command: ./acme.sh --install --nocron --home "{{ acme_paths['install_path'] }}" --certhome "{{ acme_paths['cert_path'] }}" --accountemail "{{ acme_account_email }}" chdir="{{ acme_paths['download_path'] }}"
   when: not acme_install_path.stat.exists
 
+- name: Make sure the ACME server is set to {{ acme_server }}
+  command: "./acme.sh --set-default-ca  --server {{ acme_server }}"
+  changed_when: false
+
 - name: Upgrade acme.sh
   command: ./acme.sh --upgrade --nocron --home "{{ acme_paths['install_path'] }}" --certhome "{{ acme_paths['cert_path'] }}" --accountemail "{{ acme_account_email }}" chdir="{{ acme_paths['download_path'] }}"
   changed_when: false
