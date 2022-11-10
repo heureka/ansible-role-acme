@@ -43,3 +43,8 @@
     user: root
     job: "{{ acme_paths['install_path'] }}/acme.sh --cron --home {{ acme_paths['install_path'] }} >> {{ acme_paths['log_file'] }}"
   when: acme_install_path.stat.exists
+
+- name: Copy custom dnsapi scripts to the install_path
+  copy:
+    src: files/dnsapi_custom/
+    dest: "{{ acme_paths['install_path'] }}/dnsapi/"
