@@ -20,7 +20,9 @@
   command:
     cmd: >
       {{ acme_paths['install_path'] }}/acme.sh --issue --server {{ acme_server|default('letsencrypt') }} -d
-      {{ item.domain }} --dns {{ item.provider }}
+      {{ item.domain }}
+      {{ "-d *." + item.domain if item.wildcard|default(false) else '' }}
+      --dns {{ item.provider }}
       {{ '--challenge-alias {{ acme_dns01_challenge_alias.alias }}' if acme_dns01_challenge_alias.enabled else '' }}
       --config-home {{ acme_paths['install_path'] }}
       --cert-file {{ acme_paths['certificates_path'] }}/{{ item.domain }}/{{ item.domain }}.cer
