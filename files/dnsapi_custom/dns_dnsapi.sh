@@ -21,6 +21,12 @@ dns_dnsapi_add() {
   _debug fulldomain "$fulldomain"
   _debug txtvalue "$txtvalue"
 
+  DNSAPI_AUTH_TOKEN="${DNSAPI_AUTH_TOKEN:-$(_readaccountconf_mutable DNSAPI_AUTH_TOKEN)}"
+  DNSAPI_SERVERS="${DNSAPI_SERVERS:-$(_readaccountconf_mutable DNSAPI_SERVERS)}"
+
+  _saveaccountconf_mutable DNSAPI_AUTH_TOKEN "$DNSAPI_AUTH_TOKEN"
+  _saveaccountconf_mutable DNSAPI_SERVERS "$DNSAPI_SERVERS"
+
   export _H1="X-Auth_Token: $DNSAPI_AUTH_TOKEN"
   export _H2="Content-Type: application/json"
 
