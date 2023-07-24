@@ -38,6 +38,7 @@
     (acme_enabled and acme_domain_certificate.stat.exists == false) or
     (acme_enabled and acme_force is defined and acme_force )
   environment:
+    CF_Token: "{{ CF_TOKEN if item.provider == 'dns_cf' else '' }}"
     CLOUDSDK_ACTIVE_CONFIG_NAME: "{{ 'dns-config' if item.provider == 'dns_gcloud' else '' }}"
     DNSAPI_SERVERS: "{{ DNSAPI_SERVERS if item.provider == 'dns_dnsapi' else '' }}"
     DNSAPI_AUTH_TOKEN: "{{ DNSAPI_AUTH_TOKEN if item.provider == 'dns_dnsapi' else '' }}"
