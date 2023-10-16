@@ -4,9 +4,9 @@
     path: "{{ item }}"
     state: directory
   with_items:
-  - "{{ acme_paths['install_path'] }}"
-  - "{{ acme_paths['cert_path'] }}"
-  - "{{ acme_paths['download_path'] }}"
+    - "{{ acme_paths['install_path'] }}"
+    - "{{ acme_paths['cert_path'] }}"
+    - "{{ acme_paths['download_path'] }}"
 
 - name: Install prerequisites
   package:
@@ -35,13 +35,15 @@
   changed_when: false
   when: acme_install_path.stat.exists
 
-- name: Create cron job
+- name: Create acme cron job
   cron:
-    name: Acme.sh certificate renew
+    name: Acme.sh {{ item.domain }} certificate renew
     minute: '0'
     hour: '2'
     user: root
-    job: "{{ acme_paths['install_path'] }}/acme.sh --cron --home {{ acme_paths['install_path'] }} &>> {{ acme_paths['log_file'] }}"
+    job: "{{ (item.provider == 'dns_gcloud') | ternary('CLOUDSDK_CORE_PROJECT=' + (item.project | default('')) + ' ', '') }}{{ acme_paths['install_path'] }}/acme.sh --renew --domain {{ item.domain }} --home {{ acme_paths['install_path'] }} &>> {{ acme_paths['log_file'] }}"
+  with_items:
+    - "{{ acme_domains }}"
   when: acme_install_path.stat.exists
 
 - name: Copy custom dnsapi scripts to the install_path
