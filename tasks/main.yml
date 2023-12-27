@@ -10,3 +10,8 @@
   include_tasks: provision_certificates.yaml
   with_items:
     - "{{ acme_domains }}"
+
+- name: Run handler
+  notify: "HANDLER: Run {{ acme_reload_cmd }}"
+  when: acme_run_handler
+
