@@ -32,8 +32,8 @@
       --reloadcmd "{{ acme_reload_cmd }}"
       {{ '--force' if acme_force else '' }}
       {{ '--test' if acme_test or item.acme_test|default(false) else ''}}
-  set_fact:
-    acme_run_handler: true
+  notify:
+    - "HANDLER: Run {{ acme_reload_cmd }}"
   when: |
     (acme_enabled and acme_domain_certificate.stat.exists == false) or
     (acme_enabled and acme_force is defined and acme_force )
