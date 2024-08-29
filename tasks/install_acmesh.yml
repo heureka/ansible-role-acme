@@ -50,7 +50,7 @@
   cron:
     name: PATH
     env: yes
-    job: "{{lookup('ansible.builtin.env', 'PATH')}}:/snap/bin"
+    job: "{{ ansible_env.PATH }}"
   when: acme_install_path.stat.exists and acme_gcloud_snap
 
 - name: Copy custom dnsapi scripts to the install_path
