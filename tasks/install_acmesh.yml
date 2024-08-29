@@ -51,6 +51,7 @@
     name: PATH
     env: yes
     job: "{{ ansible_env.PATH }}"
+    user: root
   when: acme_install_path.stat.exists and acme_gcloud_snap
 
 - name: Copy custom dnsapi scripts to the install_path
