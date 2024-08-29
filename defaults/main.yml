@@ -31,3 +31,4 @@ acme_paths:
   cert_path: "/opt/acmesh/certs"
   log_file: "/var/log/acmesh.log"
 
+acme_gcloud_snap: false
