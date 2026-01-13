@@ -6,6 +6,21 @@
 - name: Make sure acme.sh is installed
   include_tasks: "install_acmesh.yml"
 
+- name: Update acme.sh account credentials
+  lineinfile:
+    path: "{{ acme_paths['install_path'] }}/account.conf"
+    regexp: "^SAVED_{{ item.key }}="
+    line: "SAVED_{{ item.key }}='{{ item.value }}'"
+    create: yes
+    mode: '0600'
+  loop:
+    - { key: 'CF_Token', value: "{{ CF_TOKEN | default('') }}", provider: 'dns_cf' }
+    - { key: 'DNSAPI_AUTH_TOKEN', value: "{{ DNSAPI_AUTH_TOKEN | default('') }}", provider: 'dns_dnsapi' }
+    - { key: 'DNSAPI_SERVERS', value: "{{ DNSAPI_SERVERS | default('') }}", provider: 'dns_dnsapi' }
+  when:
+    - item.value != ''
+    - acme_domains | selectattr('provider', 'equalto', item.provider) | list | length > 0
+
 - name: Check for and potentially provision LE certificates
   include_tasks: provision_certificates.yaml
   with_items:
