@@ -41,7 +41,7 @@
     minute: '0'
     hour: '2'
     user: root
-    job: "{{ (item.provider == 'dns_gcloud') | ternary('CLOUDSDK_CORE_PROJECT=' + (item.project | default('')) + ' ', '') }}{{ acme_paths['install_path'] }}/acme.sh --renew --domain {{ item.domain }} --home {{ acme_paths['install_path'] }} --certhome {{ acme_paths['cert_path'] }} &>> {{ acme_paths['log_file'] }}"
+    job: "{{ (item.provider == 'dns_gcloud') | ternary('CLOUDSDK_CORE_PROJECT=' + (item.project | default('')) + ' ', '') }}{{ acme_paths['install_path'] }}/acme.sh --renew --domain {{ item.domain }} --home {{ acme_paths['install_path'] }} --certhome {{ acme_paths['cert_path'] }} >> {{ acme_paths['log_file'] }} 2>&1"
   with_items:
     - "{{ acme_domains }}"
   when: acme_install_path.stat.exists
